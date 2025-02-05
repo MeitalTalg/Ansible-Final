@@ -1,0 +1,7 @@
+---
+# handlers file for nginx
+
+- name: Uninstall nginx
+  dnf:
+    name: "{{ Service }}"
+    state: absent

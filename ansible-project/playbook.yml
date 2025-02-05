@@ -1,0 +1,18 @@
+---
+- name: Setup mysql server
+  hosts: service__mysql
+  gather_facts: yes
+  become: yes
+  roles:
+    - mysql
+
+- name: Setup Nginx server
+  hosts: service__nginx
+  gather_facts: yes
+  become: yes
+  roles:
+    - nginx
+
+
+
+  

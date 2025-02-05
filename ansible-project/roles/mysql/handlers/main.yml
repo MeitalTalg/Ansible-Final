@@ -1,0 +1,6 @@
+---
+# handlers file for mysql
+- name: Uninstall mysql 
+  dnf:
+    name: mysqld
+    state: absent

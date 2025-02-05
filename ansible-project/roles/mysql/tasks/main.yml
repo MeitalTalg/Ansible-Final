@@ -1,0 +1,51 @@
+---
+# tasks file for mysql
+
+- name: Set a hostname
+  ansible.builtin.hostname:
+    name: "{{ Name }}"
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+  
+- name: Check whether a package called mysql is installed
+  ansible.builtin.debug:
+    msg: "{{ ansible_facts.packages['mysql'] | length }} versions of mysql are installed!"
+  when: "'mysql' in ansible_facts.packages"
+  notify: Uninstall mysql 
+
+- name: Download MySQL repository file
+  ansible.builtin.shell: wget https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm 
+  args:
+    executable: /bin/bash
+
+- name: Install rpm
+  ansible.builtin.shell: dnf install mysql80-community-release-el9-1.noarch.rpm -y 
+  args:
+    executable: /bin/bash
+
+- name: Import MySQL key
+  rpm_key:
+    key: https://repo.mysql.com/RPM-GPG-KEY-mysql-2023
+    state: present
+
+- name: Install Mysql
+  ansible.builtin.dnf:
+    name: mysql-community-server
+    state: present
+
+- name: Ensure MySQL is running
+  systemd:
+    name: mysqld 
+    state: started
+    enabled: yes
+
+- name: Creates a cron file under /etc/cron.d
+  ansible.builtin.cron:
+    name: Restart mysql every sunday at 6am
+    weekday: "{{ Restart_Day }}"
+    hour: "{{ Restart_Hour }}"
+    user: ec2-user
+    job: "bash systemctl restart mysqld"
+

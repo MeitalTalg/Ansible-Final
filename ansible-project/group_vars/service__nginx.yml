@@ -1,0 +1,7 @@
+Name: "{{ hostvars[inventory_hostname]['tags']['Name'] }}"
+Service: "{{ hostvars[inventory_hostname]['tags']['Service'] }}"
+Version: "{{ hostvars[inventory_hostname]['tags']['Version'] }}"
+Restart_Day: "{{ hostvars[inventory_hostname]['tags']['Restart_Day'] }}"
+Restart_Hour: "{{ hostvars[inventory_hostname]['tags']['Restart_Hour'] }}"
+
+

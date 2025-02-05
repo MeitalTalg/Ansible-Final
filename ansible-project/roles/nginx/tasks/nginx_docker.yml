@@ -1,0 +1,9 @@
+- name: Install docker
+  ansible.builtin.service:
+    name: docker
+    enabled: true
+
+- name: Run nginx on continar 
+  ansible.builtin.shell: docker run -it --rm -d -p 8080:80 --name web nginx
+  args:
+    executable: /bin/bash

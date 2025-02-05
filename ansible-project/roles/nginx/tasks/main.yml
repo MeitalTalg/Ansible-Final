@@ -1,0 +1,35 @@
+---
+# tasks file for nginx
+
+- name: Set a hostname
+  ansible.builtin.hostname:
+    name: "{{ Name }}"
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+  
+- name: Check whether a package called nginx is installed
+  ansible.builtin.debug:
+    msg: "{{ ansible_facts.packages['nginx'] | length }} versions of nginx are installed!"
+  when: "'nginx' in ansible_facts.packages"
+  notify: Uninstall nginx
+  
+- name: Install Nginx
+  dnf:
+    name: "{{ Service + '-' + Version }}"
+    state: latest
+
+- name: Ensure nginx is running
+  systemd:
+    name: "{{ Service }}"
+    state: started
+    enabled: yes
+
+- name: Creates a cron file under /etc/cron.d
+  ansible.builtin.cron:
+    name: Restart mysql every Saturday at midnight
+    weekday: "{{ Restart_Day }}"
+    hour: "{{ Restart_Hour }}"
+    user: ec2-user
+    job: "bash systemctl restart nginx"
